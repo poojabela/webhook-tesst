@@ -160,6 +160,7 @@ export default function WebhookRequestList({ webhookId }) {
           <MagnifyingGlassIcon className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-white/30 w-3.5 h-3.5" />
         </div>
         
+        
         <div className="relative">
           <select
             value={filterMethod}
