@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, forwardRef, useImperativeHandle } from 'react';
 import { ClipboardIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 
-export default function WebhookGenerator({ onWebhookGenerated }) {
+const WebhookGenerator = forwardRef(function WebhookGenerator({ onWebhookGenerated }, ref) {
   const [webhookUrl, setWebhookUrl] = useState('');
   const [copied, setCopied] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -29,6 +29,11 @@ export default function WebhookGenerator({ onWebhookGenerated }) {
       setIsGenerating(false);
     }
   };
+
+  // Expose methods to parent component through ref
+  useImperativeHandle(ref, () => ({
+    generateWebhook: generateWebhookUrl
+  }));
 
   const copyToClipboard = async () => {
     if (webhookUrl) {
@@ -67,7 +72,6 @@ export default function WebhookGenerator({ onWebhookGenerated }) {
           </div>
           
           <div className="flex justify-between items-center">
-            <span className="text-xs text-white/40">24h expiry</span>
             <button
               onClick={generateWebhookUrl}
               disabled={isGenerating}
@@ -99,4 +103,6 @@ export default function WebhookGenerator({ onWebhookGenerated }) {
       )}
     </div>
   );
-} 
+});
+
+export default WebhookGenerator; 

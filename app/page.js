@@ -43,7 +43,7 @@ export default function Home() {
           </ol>
           
           <div className="mt-4 pt-3 border-t border-[#222] text-xs text-gray-500">
-            <p>URLs expire after 24 hours • No registration required</p>
+            <p>No registration required</p>
           </div>
         </div>
       </div>

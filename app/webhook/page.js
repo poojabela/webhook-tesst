@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import WebhookGenerator from '../components/WebhookGenerator';
 import WebhookRequestList from '../components/WebhookRequestList';
@@ -10,19 +10,23 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 
 export default function WebhookPage() {
   const [webhookId, setWebhookId] = useState(null);
+  const webhookGeneratorRef = useRef(null);
   
-  // On component mount, check if we have a stored webhookId
+  // On component mount, generate a new webhook
   useEffect(() => {
-    const storedId = localStorage.getItem('webhookId');
-    if (storedId) {
-      setWebhookId(storedId);
-    }
+    // Auto-generate new webhook ID after a small delay to ensure component is mounted
+    const timer = setTimeout(() => {
+      if (webhookGeneratorRef.current && webhookGeneratorRef.current.generateWebhook) {
+        webhookGeneratorRef.current.generateWebhook();
+      }
+    }, 300);
+    
+    return () => clearTimeout(timer);
   }, []);
   
   // Handler for when a new webhook is generated
   const handleWebhookGenerated = (id) => {
     setWebhookId(id);
-    localStorage.setItem('webhookId', id);
   };
   
   return (
@@ -37,10 +41,13 @@ export default function WebhookPage() {
         </div>
         
         <div className="space-y-4">
-          <WebhookGenerator onWebhookGenerated={handleWebhookGenerated} />
+          <WebhookGenerator 
+            ref={webhookGeneratorRef}
+            onWebhookGenerated={handleWebhookGenerated} 
+          />
           {webhookId && <WebhookSimulator webhookId={webhookId} />}
-          {webhookId && <SmartDocumentation webhookId={webhookId} />}
-          <WebhookRequestList webhookId={webhookId} />
+          {/* {webhookId && <SmartDocumentation webhookId={webhookId} />} */}
+          {webhookId && <WebhookRequestList webhookId={webhookId} />}
         </div>
         
         <div className="mt-6 text-center">
